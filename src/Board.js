@@ -151,16 +151,12 @@
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var currCheck = majorDiagonalColumnIndexAtFirstRow;
-      // console.log(currCheck);
+
       for(var i = 1; currCheck[0] + i < this.attributes.n && currCheck[1] + i < this.attributes.n; i++){
-        // console.log("first",currCheck[1] + i);
-        // console.log("second",currCheck[0] + i);
-        // console.log(this.attributes[currCheck[0] + i]);
         if(this.attributes[currCheck[0] + i][currCheck[1] + i] === 1){
           return true;
         };
-      }
-
+      };// as long as currCheck at index + i < n check if there is a 1 
 
       return false; // fixme
     },
@@ -184,18 +180,40 @@
       return false; // fixme
     },
 
-
-
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      var currCheck = minorDiagonalColumnIndexAtFirstRow;
+
+      for(var i = 1; currCheck[0] + i < this.attributes.n && currCheck[1] - i >= 0; i++){
+        if(this.attributes[currCheck[0] + i][currCheck[1] - i] === 1){
+          return true;
+        };
+      }; 
+  
       return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      //i === row && j === column
+      for(var i = 0; i < this.attributes.n; i++){
+        
+        if(this.attributes[i].includes(1)){
+
+          for(var j = this.attributes.n - 1; j >= 0; j--){
+        
+            if(this.attributes[i][j] === 1){
+              
+              if(this.hasMinorDiagonalConflictAt([i,j])){
+                return true;
+              };
+            };
+          };// find 1's in the array
+        };
+      };// find the first row that contains a 1
       return false; // fixme
     }
 
