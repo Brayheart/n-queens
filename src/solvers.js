@@ -39,42 +39,117 @@ window.findNRooksSolution = function(n) {
 
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function(n) {
+window.countNRooksSolutions = function(n, board, currentRow, countOfRooks) {
   var solutionCount = 0; 
-  var countOfRooks = 0;
-  var board = new Board({n: n});
+  board = board || new Board({'n': n}); //board is board otherwise is new board with n length
+  currentRow = currentRow || 0; //current row starts at 0
+  countOfRooks = countOfRooks || 0; //is 0 if undefined
 
-
-  // console.log(board.rows().length);
-  debugger
-  for(var columnIndex = 0; columnIndex < board.rows().length; columnIndex++) { //incriments columns
-    for(var rowIndex = 0; rowIndex < board.rows().length; rowIndex++) {//incriments rows
-      if (!board.hasAnyRooksConflicts()) {
-        board.togglePiece(rowIndex, columnIndex); //toggles if no confilict
-        countOfRooks++;//incriments number of rooks on board
-      }
-      if (!board.hasAnyRooksConflicts() && countOfRooks === n) {
-        solutionCount++;
-      }
+  //base case is placing rook with no conflicts
+  if (countOfRooks <  n) {
+    for (var colI = 0; colI < n; colI++) {//for loop for column index
+      board.attributes[currentRow][colI] = 1;//places rook 
+      countOfRooks++;
+      currentRow++;//goes down a row
+      if (!board.hasAnyRooksConflicts()) {//if no conflicts
+        solutionCount = solutionCount + countNRooksSolutions(n, board, currentRow, countOfRooks);
+        //first case 0 = 0 + 1, called recursivly 
+      }  
+      currentRow--;//go up a row
+      board.attributes[currentRow][colI] = 0; //unplace rook 
+      countOfRooks--;
+      
     }
+  } else {//if countOfRooks === n 
+    solutionCount++
   }
-
+  
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
-window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+window.findNQueensSolution = function(n, board, currentRow, countOfQueens, matrix) {
+  var solutionCount = 0; 
+  //var matrix = matrix || [];
+  board = board || new Board({'n': n}); //board is board otherwise is new board with n length
+  //currentRow = currentRow || 0; //current row starts at 0
+  countOfQueens = 0; //is 0 if undefined
+  var solution = [];
+  
+  if (n === 0) {
+    return [];
+  }
+
+  while(countOfQueens !== n){
+    for(var currRow = 0; currRow < n; currRow++){
+      for(var currColumn = 0; currColumn < n; currColumn){
+        board.attributes[currRow][currColumn] = 1;
+        countOfQueens++;
+        if(!board.hasAnyQueensConflicts()){
+          break;
+        }else{
+          board.attributes[currRow][currColumn] = 0;
+          countOfQueens--;
+        }
+      }
+    }
+  }
+
+  console.log(countOfQueens);
+  // //base case is placing rook with no conflicts
+  // if (countOfQueens < n) {
+  //   for (var colI = 0; colI < n; colI++) {//for loop for column index
+  //     board.attributes[currentRow][colI] = 1;//places queen  
+  //     countOfQueens++;
+  //     currentRow++;//goes down a row
+  //     if (!board.hasAnyQueensConflicts()) {//if no conflicts
+  //       matrix = findNQueensSolution(n, board, currentRow, countOfQueens);
+  //       //first case 0 = 0 + 1, called recursivly 
+  //     }  
+  //     currentRow--;//go up a row
+  //     //board.attributes[currentRow][colI] = 0; //unplace queen  
+  //     countOfQueens--;
+  //   }
+  // } else {//if countOfRooks === n 
+  //   console.log(board)
+  //   for (var i = 0; i < n; i++) {
+  //     matrix.push(board.attributes[i])
+  //   }
+    
+  // }
+  //console.log('matr', matrix)
+  // return matrix;
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
-window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+window.countNQueensSolutions = function(n, board, currentRow, countOfQueens) {
+  var solutionCount = 0; 
+  board = board || new Board({'n': n}); //board is board otherwise is new board with n length
+  currentRow = currentRow || 0; //current row starts at 0
+  countOfQueens = countOfQueens || 0; //is 0 if undefined
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  //base case is placing rook with no conflicts
+  if (countOfQueens <  n) {
+    for (var colI = 0; colI < n; colI++) {//for loop for column index
+      board.attributes[currentRow][colI] = 1;//places queen  
+      countOfQueens++;
+      currentRow++;//goes down a row
+      if (!board.hasAnyQueensConflicts()) {//if no conflicts
+        solutionCount = solutionCount + countNQueensSolutions(n, board, currentRow, countOfQueens);
+        //first case 0 = 0 + 1, called recursivly 
+      }  
+      currentRow--;//go up a row
+      board.attributes[currentRow][colI] = 0; //unplace queen  
+      countOfQueens--;
+    }
+  } else {//if countOfRooks === n 
+    solutionCount++
+  }
+  
+  console.log('Number of solutions for ' + n + ' Queens:', solutionCount);
   return solutionCount;
 };
